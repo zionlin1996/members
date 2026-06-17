@@ -5,5 +5,6 @@ export default [
   layout("routes/register/index.tsx", [
     route("register", "routes/register/identity.tsx"),
     route("register/method", "routes/register/method.tsx"),
+    route("register/pending", "routes/register/pending.tsx"),
   ]),
 ] satisfies RouteConfig;

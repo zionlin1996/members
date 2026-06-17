@@ -20,12 +20,15 @@ type Pages = {
   "/register/method": {
     params: {};
   };
+  "/register/pending": {
+    params: {};
+  };
 };
 
 type RouteFiles = {
   "root.tsx": {
     id: "root";
-    page: "/" | "/register" | "/register/method";
+    page: "/" | "/register" | "/register/method" | "/register/pending";
   };
   "routes/home.tsx": {
     id: "routes/home";
@@ -33,7 +36,7 @@ type RouteFiles = {
   };
   "routes/register/index.tsx": {
     id: "routes/register/index";
-    page: "/register" | "/register/method";
+    page: "/register" | "/register/method" | "/register/pending";
   };
   "routes/register/identity.tsx": {
     id: "routes/register/identity";
@@ -43,6 +46,10 @@ type RouteFiles = {
     id: "routes/register/method";
     page: "/register/method";
   };
+  "routes/register/pending.tsx": {
+    id: "routes/register/pending";
+    page: "/register/pending";
+  };
 };
 
 type RouteModules = {
@@ -51,4 +58,5 @@ type RouteModules = {
   "routes/register/index": typeof import("./app/routes/register/index.tsx");
   "routes/register/identity": typeof import("./app/routes/register/identity.tsx");
   "routes/register/method": typeof import("./app/routes/register/method.tsx");
+  "routes/register/pending": typeof import("./app/routes/register/pending.tsx");
 };

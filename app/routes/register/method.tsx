@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import {
+  Alert,
+  AlertDescription,
+  AlertIcon,
   Box,
   Button,
   FormControl,
@@ -8,12 +11,15 @@ import {
   Heading,
   Input,
   SimpleGrid,
+  Spinner,
   Text,
   VStack,
 } from "@chakra-ui/react";
 import { FaTelegram } from "react-icons/fa";
 import { MdLock, MdVpnKey } from "react-icons/md";
+import { startRegistration } from "@simplewebauthn/browser";
 import { useRegisterContext } from "../../context/RegisterContext";
+import { passkeyRegisterStart, passkeyRegisterFinish } from "../../libs/api";
 
 type NativeMethod = "password" | "passkey";
 
@@ -56,6 +62,8 @@ export default function MethodRoute() {
   const [selectedMethod, setSelectedMethod] = useState<NativeMethod | null>(null);
   const [password, setPassword] = useState("");
   const [backupEmail, setBackupEmail] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
 
   useEffect(() => {
     if (!identity) navigate("/register", { replace: true });
@@ -65,6 +73,30 @@ export default function MethodRoute() {
 
   const canSubmitNative =
     selectedMethod === "password" ? !!password && !!backupEmail : !!backupEmail;
+
+  async function handlePasskeySubmit() {
+    if (!identity) return;
+    setSubmitting(true);
+    setSubmitError("");
+    try {
+      const { sessionId, options } = await passkeyRegisterStart({
+        displayName: identity.displayName,
+        username: identity.username,
+        backupEmail,
+      });
+      const credential = await startRegistration({ optionsJSON: options });
+      await passkeyRegisterFinish({ sessionId, credential });
+      navigate("/register/pending");
+    } catch (err) {
+      if (err instanceof Error && err.name === "NotAllowedError") {
+        setSubmitError("Passkey setup was cancelled.");
+      } else {
+        setSubmitError(err instanceof Error ? err.message : "Something went wrong.");
+      }
+    } finally {
+      setSubmitting(false);
+    }
+  }
 
   return (
     <VStack spacing={5} align="stretch">
@@ -187,9 +219,22 @@ export default function MethodRoute() {
         </FormControl>
       )}
 
+      {submitError && (
+        <Alert status="error" borderRadius="sm" fontSize="xs">
+          <AlertIcon />
+          <AlertDescription>{submitError}</AlertDescription>
+        </Alert>
+      )}
+
       {selectedMethod && (
-        <Button variant="brand" isDisabled={!canSubmitNative} w="full" h={10}>
-          {NATIVE_SUBMIT_LABEL[selectedMethod]}
+        <Button
+          variant="brand"
+          isDisabled={!canSubmitNative || submitting}
+          w="full"
+          h={10}
+          onClick={selectedMethod === "passkey" ? handlePasskeySubmit : undefined}
+        >
+          {submitting ? <Spinner size="sm" /> : NATIVE_SUBMIT_LABEL[selectedMethod]}
         </Button>
       )}
 
