@@ -1,5 +1,6 @@
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router";
 import { ChakraProvider } from "@chakra-ui/react";
+import { theme } from "./theme";
 
 export default function Root() {
   return (
@@ -12,7 +13,7 @@ export default function Root() {
         <Links />
       </head>
       <body>
-        <ChakraProvider>
+        <ChakraProvider theme={theme}>
           <Outlet />
         </ChakraProvider>
         <ScrollRestoration />
