@@ -1,11 +1,10 @@
-const USERNAME_RE = /^[a-z0-9]+([._-][a-z0-9]+)*$/;
+import { isValidEmail } from "./email";
 
-export function isValidUsername(username: string): boolean {
-  return USERNAME_RE.test(username);
-}
+export const isValidUsername = (username: string) =>
+  isValidEmail(`${username}@example.com`);
 
-export function deriveUsername(displayName: string): string {
-  return displayName
+export const deriveUsername = (displayName: string): string =>
+  displayName
     .toLowerCase()
     .trim()
     .replace(/\s+/g, ".")
@@ -13,4 +12,3 @@ export function deriveUsername(displayName: string): string {
     .replace(/\.{2,}/g, ".")
     .replace(/^[._-]+|[._-]+$/g, "")
     .slice(0, 64);
-}

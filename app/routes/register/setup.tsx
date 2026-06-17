@@ -26,6 +26,7 @@ import {
   passkeyRegisterFinish,
 } from "../../libs/api";
 import { DOMAIN } from "../../libs/constants";
+import { isValidEmail } from "../../libs/email";
 
 // ── Shared form primitives ─────────────────────────────────────────────────
 
@@ -48,7 +49,7 @@ const BackButton = () => {
   );
 };
 
-const BackupEmailInput = ({
+const EmailField = ({
   value,
   onChange,
   error,
@@ -56,9 +57,11 @@ const BackupEmailInput = ({
   value: string;
   onChange: (v: string) => void;
   error?: string;
-}) =>(
+}) => {
+  const formatInvalid = !!value && !isValidEmail(value);
+  return (
     <span style={{ display: "block" }}>
-      <FormControl>
+      <FormControl isInvalid={formatInvalid}>
         <FormLabel>Backup email</FormLabel>
         <Input
           type="email"
@@ -66,6 +69,7 @@ const BackupEmailInput = ({
           onChange={(e) => onChange(e.target.value)}
           placeholder="Used for account recovery"
         />
+        <FormErrorMessage fontSize="xs">Enter a valid email address</FormErrorMessage>
       </FormControl>
       {error && (
         <Alert status="error" borderRadius="sm" fontSize="xs">
@@ -73,7 +77,8 @@ const BackupEmailInput = ({
         </Alert>
       )}
     </span>
-  )
+  );
+}
 
 const SubmitButton = ({
   children,
@@ -105,7 +110,7 @@ const PasswordForm = ({ identity, onSuccess }: FormProps) => {
   const [error, setError] = useState("");
 
   const passwordsMatch = !confirmPassword || password === confirmPassword;
-  const canSubmit = !!password && !!confirmPassword && passwordsMatch && !!backupEmail;
+  const canSubmit = !!password && !!confirmPassword && passwordsMatch && isValidEmail(backupEmail);
 
   async function handleSubmit() {
     setSubmitting(true);
@@ -151,7 +156,7 @@ const PasswordForm = ({ identity, onSuccess }: FormProps) => {
         />
         <FormErrorMessage fontSize="xs">Passwords do not match</FormErrorMessage>
       </FormControl>
-      <BackupEmailInput value={backupEmail} onChange={setBackupEmail} error={error} />
+      <EmailField value={backupEmail} onChange={setBackupEmail} error={error} />
       <SubmitButton disabled={!canSubmit} loading={submitting} onClick={handleSubmit}>
         Create account
       </SubmitButton>
@@ -198,8 +203,8 @@ const PasskeyForm = ({ identity, onSuccess }: FormProps) => {
           Your browser will prompt you to register a passkey using biometrics or a device PIN. No password needed.
         </Text>
       </Box>
-      <BackupEmailInput value={backupEmail} onChange={setBackupEmail} error={error} />
-      <SubmitButton disabled={!backupEmail} loading={submitting} onClick={handleSubmit}>
+      <EmailField value={backupEmail} onChange={setBackupEmail} error={error} />
+      <SubmitButton disabled={!isValidEmail(backupEmail)} loading={submitting} onClick={handleSubmit}>
         Set up passkey
       </SubmitButton>
     </VStack>
