@@ -34,7 +34,6 @@ export const theme = extendTheme({
       "bg.canvas":       { default: "surface.canvas" },
       "bg.base":         { default: "surface.base" },
       "bg.input":        { default: "surface.input" },
-      // tinted brand bg used for selected-card state
       "bg.brand-subtle": { default: "rgba(88, 101, 242, 0.12)" },
       "text.primary":    { default: "#ffffff" },
       "text.secondary":  { default: "#949ba4" },
@@ -91,6 +90,19 @@ export const theme = extendTheme({
           },
         },
 
+        // Native auth methods (password, passkey) — same structure as google
+        native: {
+          bg: "bg.input",
+          color: "text.primary",
+          border: "1px solid",
+          borderColor: "whiteAlpha.200",
+          borderRadius: "sm",
+          fontWeight: "medium",
+          fontSize: "sm",
+          _hover: { bg: "bg.input", borderColor: "whiteAlpha.400" },
+          _active: { bg: "bg.input" },
+        },
+
         google: {
           bg: "google.bg",
           color: "google.text",
@@ -106,11 +118,45 @@ export const theme = extendTheme({
         telegram: {
           bg: "telegram.bg",
           color: "white",
+          border: "1px solid",
+          borderColor: "whiteAlpha.200",
           borderRadius: "sm",
           fontWeight: "medium",
           fontSize: "sm",
           _hover: { bg: "telegram.hover" },
           _active: { bg: "telegram.active" },
+        },
+      },
+    },
+
+    FormLabel: {
+      baseStyle: {
+        color: "text.secondary",
+        fontSize: "xs",
+        fontWeight: "bold",
+        textTransform: "uppercase",
+        letterSpacing: "wider",
+        mb: "6px",
+      },
+    },
+
+    Modal: {
+      baseStyle: {
+        dialog: {
+          bg: "bg.base",
+        },
+        header: {
+          color: "text.primary",
+          fontSize: "lg",
+          fontWeight: "bold",
+          pb: 2,
+        },
+        body: {
+          pb: 4,
+        },
+        closeButton: {
+          color: "text.muted",
+          _hover: { bg: "whiteAlpha.100" },
         },
       },
     },

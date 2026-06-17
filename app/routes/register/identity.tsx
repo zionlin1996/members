@@ -15,17 +15,9 @@ import {
 } from "@chakra-ui/react";
 import { useRegisterContext } from "../../context/RegisterContext";
 import { deriveUsername, isValidUsername } from "../../libs/username";
+import { DOMAIN } from "../../libs/constants";
 
 type AvailabilityStatus = "idle" | "checking" | "available" | "taken" | "error";
-
-const labelProps = {
-  color: "text.secondary",
-  fontSize: "xs" as const,
-  fontWeight: "bold" as const,
-  textTransform: "uppercase" as const,
-  letterSpacing: "wider",
-  mb: "6px",
-};
 
 export default function IdentityRoute() {
   const { setIdentity } = useRegisterContext();
@@ -103,7 +95,7 @@ export default function IdentityRoute() {
 
       <VStack spacing={5} align="stretch">
         <FormControl>
-          <FormLabel {...labelProps}>Display name</FormLabel>
+          <FormLabel>Display name</FormLabel>
           <Input
             value={displayName}
             onChange={handleDisplayNameChange}
@@ -113,7 +105,7 @@ export default function IdentityRoute() {
         </FormControl>
 
         <FormControl isInvalid={isUsernameInvalid}>
-          <FormLabel {...labelProps}>Username</FormLabel>
+          <FormLabel>Username</FormLabel>
           <Box
             display="flex"
             alignItems="center"
@@ -151,7 +143,7 @@ export default function IdentityRoute() {
               userSelect="none"
               whiteSpace="nowrap"
             >
-              @yangfrenz.club
+              @{DOMAIN}
             </Text>
           </Box>
 

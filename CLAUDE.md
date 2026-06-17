@@ -40,6 +40,26 @@ app/
 
 All colours, spacing, and component behaviour come from `app/theme.ts` — never use raw hex values or magic numbers inline. Add provider-specific colours (Google, Telegram) as named palettes; add semantic aliases (`bg.base`, `text.muted`, etc.) as semantic tokens; add component presets as Chakra component variants.
 
+## Component style
+
+- Use arrow functions for components: `const Foo = () => ...`
+- Use a direct return (no braces) when the component body is just JSX — add a block body only when hooks or local variables are needed.
+
+```tsx
+// simple — direct return
+const BackButton = ({ onClick }: { onClick: () => void }) => (
+  <Button onClick={onClick}>Back</Button>
+);
+
+// stateful — block body
+const PasswordForm = ({ onSuccess }: FormProps) => {
+  const [value, setValue] = useState("");
+  return <Input value={value} onChange={...} />;
+};
+```
+
+Route-level default exports are the one exception: React Router requires a named `export default function` for Fast Refresh compatibility.
+
 ## Routing
 
 Routes are declared explicitly in `app/routes.ts`. Use `layout()` for shared wrappers, `route()` for URL segments, `index()` for index routes. Prefer `useNavigate` + `useEffect` over `<Navigate>` for guards (the latter throws internally in RR v7 without an error boundary).

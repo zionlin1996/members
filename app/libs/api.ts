@@ -15,6 +15,28 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   return body as T;
 }
 
+// ── Password registration ──────────────────────────────────────────────────
+
+export function passwordRegister(payload: {
+  displayName: string;
+  username: string;
+  password: string;
+  backupEmail: string;
+}) {
+  return request<{ id: string; username: string; status: string }>(
+    "/auth/register/password",
+    {
+      method: "POST",
+      body: JSON.stringify({
+        displayName: payload.displayName,
+        username: payload.username,
+        password: payload.password,
+        meta: { backupEmail: payload.backupEmail },
+      }),
+    }
+  );
+}
+
 // ── Passkey registration ───────────────────────────────────────────────────
 
 export type PasskeyStartPayload = {
