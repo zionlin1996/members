@@ -31,7 +31,7 @@ export function passwordRegister(payload: {
         displayName: payload.displayName,
         username: payload.username,
         password: payload.password,
-        meta: { backupEmail: payload.backupEmail },
+        backupEmail: payload.backupEmail,
       }),
     }
   );
