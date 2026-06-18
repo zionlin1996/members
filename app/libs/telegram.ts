@@ -1,8 +1,24 @@
+import type { TelegramAuthData } from './api'
+
 export type TelegramLogin = NonNullable<Window['Telegram']>['Login']
+
+export function decodeTgAuthResult(encoded: string): TelegramAuthData | false {
+  let padded = encoded.replace(/-/g, '+').replace(/_/g, '/')
+  const rem = padded.length % 4
+  if (rem > 1) padded += '='.repeat(4 - rem)
+  try {
+    return JSON.parse(window.atob(padded)) as TelegramAuthData
+  } catch {
+    return false
+  }
+}
 
 export function loadTelegramWidget(): Promise<TelegramLogin> {
   return new Promise((resolve, reject) => {
-    if (window.Telegram?.Login) { resolve(window.Telegram.Login); return }
+    if (window.Telegram?.Login) {
+      resolve(window.Telegram.Login)
+      return
+    }
     const script = document.createElement('script')
     script.src = 'https://telegram.org/js/telegram-widget.js?22'
     script.async = true

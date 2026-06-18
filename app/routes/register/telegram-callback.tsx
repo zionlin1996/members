@@ -3,19 +3,7 @@ import { useNavigate } from 'react-router'
 import { Alert, AlertDescription, AlertIcon, Spinner, Text, VStack } from '@chakra-ui/react'
 import { useRegisterContext } from '../../context/RegisterContext'
 import { telegramRegister } from '../../libs/api'
-import type { TelegramAuthData } from '../../libs/api'
-import { loadTelegramWidget } from '../../libs/telegram'
-
-function decodeTgAuthResult(encoded: string): TelegramAuthData | false {
-  let padded = encoded.replace(/-/g, '+').replace(/_/g, '/')
-  const rem = padded.length % 4
-  if (rem > 1) padded += '='.repeat(4 - rem)
-  try {
-    return JSON.parse(window.atob(padded)) as TelegramAuthData
-  } catch {
-    return false
-  }
-}
+import { decodeTgAuthResult, loadTelegramWidget } from '../../libs/telegram'
 
 export default function TelegramCallbackRoute() {
   const { identity } = useRegisterContext()
@@ -51,7 +39,10 @@ export default function TelegramCallbackRoute() {
           { bot_id: import.meta.env.VITE_TELEGRAM_BOT_ID, request_access: true },
           async (data) => {
             if (!active) return
-            if (!data) { navigate('/register/method', { replace: true }); return }
+            if (!data) {
+              navigate('/register/method', { replace: true })
+              return
+            }
             try {
               await telegramRegister({
                 displayName: identity.displayName,
@@ -70,7 +61,9 @@ export default function TelegramCallbackRoute() {
         setApiError(err instanceof Error ? err.message : 'Telegram widget failed to load.')
       })
 
-    return () => { active = false }
+    return () => {
+      active = false
+    }
   }, [tgAuthResult, identity, navigate])
 
   if (apiError) {
