@@ -26,12 +26,15 @@ type Pages = {
   "/register/success": {
     params: {};
   };
+  "/register/telegram-callback": {
+    params: {};
+  };
 };
 
 type RouteFiles = {
   "root.tsx": {
     id: "root";
-    page: "/" | "/register" | "/register/method" | "/register/setup" | "/register/success";
+    page: "/" | "/register" | "/register/method" | "/register/setup" | "/register/success" | "/register/telegram-callback";
   };
   "routes/home.tsx": {
     id: "routes/home";
@@ -39,7 +42,7 @@ type RouteFiles = {
   };
   "routes/register/index.tsx": {
     id: "routes/register/index";
-    page: "/register" | "/register/method" | "/register/setup" | "/register/success";
+    page: "/register" | "/register/method" | "/register/setup" | "/register/success" | "/register/telegram-callback";
   };
   "routes/register/identity.tsx": {
     id: "routes/register/identity";
@@ -57,6 +60,10 @@ type RouteFiles = {
     id: "routes/register/success";
     page: "/register/success";
   };
+  "routes/register/telegram-callback.tsx": {
+    id: "routes/register/telegram-callback";
+    page: "/register/telegram-callback";
+  };
 };
 
 type RouteModules = {
@@ -67,4 +74,5 @@ type RouteModules = {
   "routes/register/method": typeof import("./app/routes/register/method.tsx");
   "routes/register/setup": typeof import("./app/routes/register/setup.tsx");
   "routes/register/success": typeof import("./app/routes/register/success.tsx");
+  "routes/register/telegram-callback": typeof import("./app/routes/register/telegram-callback.tsx");
 };

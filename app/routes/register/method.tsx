@@ -1,35 +1,10 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useNavigate } from 'react-router'
-import {
-  Alert,
-  AlertDescription,
-  AlertIcon,
-  Box,
-  Button,
-  Flex,
-  Heading,
-  Text,
-  VStack,
-} from '@chakra-ui/react'
+import { Box, Button, Flex, Heading, Text, VStack } from '@chakra-ui/react'
 import { FaTelegram } from 'react-icons/fa'
 import { MdLock, MdVpnKey } from 'react-icons/md'
 import { useRegisterContext, type AuthMethod } from '../../context/RegisterContext'
 import { DOMAIN } from '../../libs/constants'
-import { telegramRegister } from '../../libs/api'
-import type { TelegramAuthData } from '../../libs/api'
-
-declare global {
-  interface Window {
-    Telegram?: {
-      Login: {
-        auth: (
-          options: { bot_id: string; request_access?: boolean },
-          callback: (data: TelegramAuthData | false) => void,
-        ) => void
-      }
-    }
-  }
-}
 
 // Google G must stay as an inline SVG — react-icons renders single-color only,
 // but Google's brand guidelines require the standard multicolor mark.
@@ -59,8 +34,6 @@ function GoogleG() {
 export default function MethodRoute() {
   const { identity, setMethod } = useRegisterContext()
   const navigate = useNavigate()
-  const [tgLoading, setTgLoading] = useState(false)
-  const [tgError, setTgError] = useState('')
 
   useEffect(() => {
     if (!identity) navigate('/register', { replace: true })
@@ -69,32 +42,6 @@ export default function MethodRoute() {
   const registerWith = (method: AuthMethod) => () => {
     setMethod(method)
     navigate('/register/setup')
-  }
-
-  function handleTelegram() {
-    if (!window.Telegram?.Login) return
-    setTgLoading(true)
-    setTgError('')
-    window.Telegram.Login.auth(
-      { bot_id: import.meta.env.VITE_TELEGRAM_BOT_ID, request_access: true },
-      async (data) => {
-        if (!data) {
-          setTgLoading(false)
-          return
-        }
-        try {
-          await telegramRegister({
-            displayName: identity!.displayName,
-            username: identity!.username,
-            telegramData: data,
-          })
-          navigate('/register/success')
-        } catch (err) {
-          setTgError(err instanceof Error ? err.message : 'Something went wrong.')
-          setTgLoading(false)
-        }
-      },
-    )
   }
 
   if (!identity) return null
@@ -178,18 +125,11 @@ export default function MethodRoute() {
           w='full'
           h={10}
           leftIcon={<FaTelegram size={20} />}
-          isLoading={tgLoading}
-          onClick={handleTelegram}
+          onClick={() => navigate('/register/telegram-callback')}
         >
           Continue with Telegram
         </Button>
       </VStack>
-      {tgError && (
-        <Alert status='error' borderRadius='sm' fontSize='xs'>
-          <AlertIcon />
-          <AlertDescription>{tgError}</AlertDescription>
-        </Alert>
-      )}
     </VStack>
   )
 }

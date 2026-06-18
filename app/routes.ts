@@ -7,5 +7,6 @@ export default [
     route('register/method', 'routes/register/method.tsx'),
     route('register/setup', 'routes/register/setup.tsx'),
     route('register/success', 'routes/register/success.tsx'),
+    route('register/telegram-callback', 'routes/register/telegram-callback.tsx'),
   ]),
 ] satisfies RouteConfig
