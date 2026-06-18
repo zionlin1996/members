@@ -1,1 +1,1 @@
-export const DOMAIN = "yangfrenz.club";
+export const DOMAIN = 'yangfrenz.club'
