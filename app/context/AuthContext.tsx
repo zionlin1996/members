@@ -44,6 +44,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [status, setStatus] = useState<AuthStatus>('loading')
   const [member, setMember] = useState<Member | null>(null)
 
+  async function establishSession() {
+    const member = await getMe()
+    setMember(member)
+    setStatus('authenticated')
+  }
+
   // Bootstrap: try to revive the session from the refresh cookie on load.
   useEffect(() => {
     let active = true
@@ -53,14 +59,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setMember(null)
       setStatus('anonymous')
     })
-
     ;(async () => {
       try {
         await refreshTokens()
-        const member = await getMe()
         if (!active) return
-        setMember(member)
-        setStatus('authenticated')
+        await establishSession()
       } catch {
         if (!active) return
         setMember(null)
@@ -73,12 +76,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setUnauthorizedHandler(null)
     }
   }, [])
-
-  async function establishSession() {
-    const member = await getMe()
-    setMember(member)
-    setStatus('authenticated')
-  }
 
   const loginFns: LoginFns = {
     async password(username, password) {

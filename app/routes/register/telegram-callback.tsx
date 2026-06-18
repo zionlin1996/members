@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router'
 import { Alert, AlertDescription, AlertIcon, Spinner, Text, VStack } from '@chakra-ui/react'
 import { useRegisterContext } from '../../context/RegisterContext'
 import { telegramRegister } from '../../libs/api'
-import { decodeTgAuthResult, loadTelegramWidget } from '../../libs/telegram'
+import { decodeTgAuthResult, requestTelegramAuth } from '../../libs/telegram'
+import { errorMessage } from '../../libs/errors'
 
 export default function TelegramCallbackRoute() {
   const { identity } = useRegisterContext()
@@ -32,34 +33,25 @@ export default function TelegramCallbackRoute() {
 
     let active = true
 
-    loadTelegramWidget()
-      .then((tgLogin) => {
+    ;(async () => {
+      try {
+        const data = await requestTelegramAuth()
         if (!active) return
-        tgLogin.auth(
-          { bot_id: import.meta.env.VITE_TELEGRAM_BOT_ID, request_access: true },
-          async (data) => {
-            if (!active) return
-            if (!data) {
-              navigate('/register/method', { replace: true })
-              return
-            }
-            try {
-              await telegramRegister({
-                displayName: identity.displayName,
-                username: identity.username,
-                telegramData: data,
-              })
-              navigate('/register/success')
-            } catch (err) {
-              setApiError(err instanceof Error ? err.message : 'Something went wrong.')
-            }
-          },
-        )
-      })
-      .catch((err: unknown) => {
+        if (!data) {
+          navigate('/register/method', { replace: true })
+          return
+        }
+        await telegramRegister({
+          displayName: identity.displayName,
+          username: identity.username,
+          telegramData: data,
+        })
+        navigate('/register/success')
+      } catch (err) {
         if (!active) return
-        setApiError(err instanceof Error ? err.message : 'Telegram widget failed to load.')
-      })
+        setApiError(errorMessage(err, 'Telegram widget failed to load.'))
+      }
+    })()
 
     return () => {
       active = false

@@ -14,6 +14,7 @@ import {
   VStack,
 } from '@chakra-ui/react'
 import { useRegisterContext } from '../../context/RegisterContext'
+import { checkAvailability } from '../../libs/api'
 import { deriveUsername, isValidUsername } from '../../libs/username'
 import { DOMAIN } from '../../libs/constants'
 
@@ -46,12 +47,8 @@ export default function IdentityRoute() {
     const timer = setTimeout(async () => {
       setAvailability('checking')
       try {
-        const res = await fetch(
-          `${import.meta.env.VITE_API_URL}/auth/availability?username=${encodeURIComponent(username)}`,
-          { signal: controller.signal },
-        )
-        const data = await res.json()
-        setAvailability(data.username?.available ? 'available' : 'taken')
+        const data = await checkAvailability(username, controller.signal)
+        setAvailability(data.username.available ? 'available' : 'taken')
       } catch (err) {
         if (err instanceof Error && err.name !== 'AbortError') {
           setAvailability('error')

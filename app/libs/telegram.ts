@@ -13,6 +13,15 @@ export function decodeTgAuthResult(encoded: string): TelegramAuthData | false {
   }
 }
 
+export async function requestTelegramAuth(): Promise<TelegramAuthData | null> {
+  const tgLogin = await loadTelegramWidget()
+  return new Promise((resolve) => {
+    tgLogin.auth({ bot_id: import.meta.env.VITE_TELEGRAM_BOT_ID, request_access: true }, (data) =>
+      resolve(data || null),
+    )
+  })
+}
+
 export function loadTelegramWidget(): Promise<TelegramLogin> {
   return new Promise((resolve, reject) => {
     if (window.Telegram?.Login) {

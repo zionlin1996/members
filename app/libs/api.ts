@@ -71,6 +71,18 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
   return body as T
 }
 
+function post<T>(
+  path: string,
+  body?: unknown,
+  opts?: Pick<RequestOptions, 'skipAuthRetry'>,
+): Promise<T> {
+  return request<T>(path, {
+    method: 'POST',
+    ...(body !== undefined && { body: JSON.stringify(body) }),
+    ...opts,
+  })
+}
+
 // ── Session ──────────────────────────────────────────────────────────────────
 
 export type Member = {
@@ -83,21 +95,14 @@ export type Member = {
 }
 
 export function login(payload: { username: string; password: string }) {
-  return request<{ accessToken: string }>('/auth/login', {
-    method: 'POST',
-    body: JSON.stringify(payload),
-    skipAuthRetry: true,
-  })
+  return post<{ accessToken: string }>('/auth/login', payload, { skipAuthRetry: true })
 }
 
 export function passkeyLoginStart(username?: string) {
-  return request<{ sessionId: string; options: PublicKeyCredentialRequestOptionsJSON }>(
+  return post<{ sessionId: string; options: PublicKeyCredentialRequestOptionsJSON }>(
     '/auth/login/passkey/start',
-    {
-      method: 'POST',
-      body: JSON.stringify(username ? { username } : {}),
-      skipAuthRetry: true,
-    },
+    username ? { username } : {},
+    { skipAuthRetry: true },
   )
 }
 
@@ -105,17 +110,14 @@ export function passkeyLoginFinish(payload: {
   sessionId: string
   credential: AuthenticationResponseJSON
 }) {
-  return request<{ accessToken: string }>('/auth/login/passkey/finish', {
-    method: 'POST',
-    body: JSON.stringify(payload),
+  return post<{ accessToken: string }>('/auth/login/passkey/finish', payload, {
     skipAuthRetry: true,
   })
 }
 
 /** Exchanges the httpOnly refresh cookie for a fresh access token (rotates it). */
 export async function refreshTokens() {
-  const { accessToken: token } = await request<{ accessToken: string }>('/auth/refresh', {
-    method: 'POST',
+  const { accessToken: token } = await post<{ accessToken: string }>('/auth/refresh', undefined, {
     skipAuthRetry: true,
   })
   accessToken = token
@@ -127,19 +129,24 @@ export function getMe() {
 }
 
 export function telegramLogin(payload: { telegramData: TelegramAuthData }) {
-  return request<{ accessToken: string }>('/auth/login/telegram', {
-    method: 'POST',
-    body: JSON.stringify(payload),
-    skipAuthRetry: true,
-  })
+  return post<{ accessToken: string }>('/auth/login/telegram', payload, { skipAuthRetry: true })
 }
 
 export async function logout() {
-  await request<void>('/auth/logout', { method: 'POST', skipAuthRetry: true })
+  await post<void>('/auth/logout', undefined, { skipAuthRetry: true })
   accessToken = null
 }
 
-// ── Password registration ──────────────────────────────────────────────────
+export function checkAvailability(username: string, signal?: AbortSignal) {
+  return request<{ username: { available: boolean } }>(
+    `/auth/availability?username=${encodeURIComponent(username)}`,
+    { signal },
+  )
+}
+
+// ── Registration ───────────────────────────────────────────────────────────
+
+type RegisterResult = { id: string; username: string; status: string }
 
 export function passwordRegister(payload: {
   displayName: string
@@ -147,18 +154,8 @@ export function passwordRegister(payload: {
   password: string
   backupEmail: string
 }) {
-  return request<{ id: string; username: string; status: string }>('/auth/register/password', {
-    method: 'POST',
-    body: JSON.stringify({
-      displayName: payload.displayName,
-      username: payload.username,
-      password: payload.password,
-      backupEmail: payload.backupEmail,
-    }),
-  })
+  return post<RegisterResult>('/auth/register/password', payload)
 }
-
-// ── Passkey registration ───────────────────────────────────────────────────
 
 export type PasskeyStartPayload = {
   displayName: string
@@ -172,10 +169,7 @@ export type PasskeyStartResult = {
 }
 
 export function passkeyRegisterStart(payload: PasskeyStartPayload) {
-  return request<PasskeyStartResult>('/auth/register/passkey/start', {
-    method: 'POST',
-    body: JSON.stringify(payload),
-  })
+  return post<PasskeyStartResult>('/auth/register/passkey/start', payload)
 }
 
 export type PasskeyFinishPayload = {
@@ -184,16 +178,8 @@ export type PasskeyFinishPayload = {
 }
 
 export function passkeyRegisterFinish(payload: PasskeyFinishPayload) {
-  return request<{ id: string; username: string; status: string }>(
-    '/auth/register/passkey/finish',
-    {
-      method: 'POST',
-      body: JSON.stringify(payload),
-    },
-  )
+  return post<RegisterResult>('/auth/register/passkey/finish', payload)
 }
-
-// ── Telegram registration ──────────────────────────────────────────────────
 
 export type TelegramAuthData = {
   id: number
@@ -210,8 +196,5 @@ export function telegramRegister(payload: {
   username: string
   telegramData: TelegramAuthData
 }) {
-  return request<{ id: string; username: string; status: string }>('/auth/register/telegram', {
-    method: 'POST',
-    body: JSON.stringify(payload),
-  })
+  return post<RegisterResult>('/auth/register/telegram', payload)
 }

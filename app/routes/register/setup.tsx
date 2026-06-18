@@ -22,6 +22,7 @@ import type { Identity } from '../../context/RegisterContext'
 import { passwordRegister, passkeyRegisterStart, passkeyRegisterFinish } from '../../libs/api'
 import { DOMAIN } from '../../libs/constants'
 import { isValidEmail } from '../../libs/email'
+import { errorMessage, isPasskeyCancelled } from '../../libs/errors'
 
 // ── Shared form primitives ─────────────────────────────────────────────────
 
@@ -47,35 +48,19 @@ const BackButton = () => {
   )
 }
 
-const EmailField = ({
-  value,
-  onChange,
-  error,
-}: {
-  value: string
-  onChange: (v: string) => void
-  error?: string
-}) => {
+const EmailField = ({ value, onChange }: { value: string; onChange: (v: string) => void }) => {
   const formatInvalid = !!value && !isValidEmail(value)
   return (
-    <span style={{ display: 'block' }}>
-      <FormControl isInvalid={formatInvalid}>
-        <FormLabel>Backup email</FormLabel>
-        <Input
-          type='email'
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          placeholder='Used for account recovery'
-        />
-        <FormErrorMessage fontSize='xs'>Enter a valid email address</FormErrorMessage>
-      </FormControl>
-      {error && (
-        <Alert status='error' borderRadius='sm' fontSize='xs'>
-          <AlertIcon />
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
-      )}
-    </span>
+    <FormControl isInvalid={formatInvalid}>
+      <FormLabel>Backup email</FormLabel>
+      <Input
+        type='email'
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder='Used for account recovery'
+      />
+      <FormErrorMessage fontSize='xs'>Enter a valid email address</FormErrorMessage>
+    </FormControl>
   )
 }
 
@@ -123,7 +108,7 @@ const PasswordForm = ({ identity, onSuccess }: FormProps) => {
       })
       onSuccess()
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Something went wrong.')
+      setError(errorMessage(err))
       setSubmitting(false)
     }
   }
@@ -159,7 +144,13 @@ const PasswordForm = ({ identity, onSuccess }: FormProps) => {
         />
         <FormErrorMessage fontSize='xs'>Passwords do not match</FormErrorMessage>
       </FormControl>
-      <EmailField value={backupEmail} onChange={setBackupEmail} error={error} />
+      <EmailField value={backupEmail} onChange={setBackupEmail} />
+      {error && (
+        <Alert status='error' borderRadius='sm' fontSize='xs'>
+          <AlertIcon />
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      )}
       <SubmitButton disabled={!canSubmit} loading={submitting} onClick={handleSubmit}>
         Create account
       </SubmitButton>
@@ -185,11 +176,7 @@ const PasskeyForm = ({ identity, onSuccess }: FormProps) => {
       await passkeyRegisterFinish({ sessionId, credential })
       onSuccess()
     } catch (err) {
-      if (err instanceof Error && err.name === 'NotAllowedError') {
-        setError('Passkey setup was cancelled.')
-      } else {
-        setError(err instanceof Error ? err.message : 'Something went wrong.')
-      }
+      setError(isPasskeyCancelled(err) ? 'Passkey setup was cancelled.' : errorMessage(err))
       setSubmitting(false)
     }
   }
@@ -211,7 +198,13 @@ const PasskeyForm = ({ identity, onSuccess }: FormProps) => {
           password needed.
         </Text>
       </Box>
-      <EmailField value={backupEmail} onChange={setBackupEmail} error={error} />
+      <EmailField value={backupEmail} onChange={setBackupEmail} />
+      {error && (
+        <Alert status='error' borderRadius='sm' fontSize='xs'>
+          <AlertIcon />
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      )}
       <SubmitButton
         disabled={!isValidEmail(backupEmail)}
         loading={submitting}

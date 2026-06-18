@@ -1,7 +1,8 @@
 import { useNavigate } from 'react-router'
-import { Box, Button, Heading, Text, VStack } from '@chakra-ui/react'
+import { Button, Heading, Text, VStack } from '@chakra-ui/react'
 import { DOMAIN } from '../libs/constants'
 import { useAuth } from '../context/AuthContext'
+import { CenteredScreen } from '../components/AuthCard'
 
 export default function Home() {
   const { member, logout } = useAuth()
@@ -13,7 +14,7 @@ export default function Home() {
   }
 
   return (
-    <Box minH='100vh' display='flex' alignItems='center' justifyContent='center' px={4}>
+    <CenteredScreen>
       <VStack spacing={4} textAlign='center'>
         <Heading size='xl' color='text.primary'>
           Welcome{member ? `, ${member.displayName}` : ''}
@@ -25,6 +26,6 @@ export default function Home() {
           Sign out
         </Button>
       </VStack>
-    </Box>
+    </CenteredScreen>
   )
 }

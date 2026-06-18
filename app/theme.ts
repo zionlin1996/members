@@ -1,6 +1,9 @@
 import { extendTheme } from '@chakra-ui/react'
 
 export const theme = extendTheme({
+  shadows: {
+    card: '0 2px 10px 0 rgba(0,0,0,.4)',
+  },
   colors: {
     brand: {
       500: '#5865f2',
