@@ -14,6 +14,9 @@ type Pages = {
   "/": {
     params: {};
   };
+  "/login": {
+    params: {};
+  };
   "/register": {
     params: {};
   };
@@ -34,11 +37,19 @@ type Pages = {
 type RouteFiles = {
   "root.tsx": {
     id: "root";
-    page: "/" | "/register" | "/register/method" | "/register/setup" | "/register/success" | "/register/telegram-callback";
+    page: "/" | "/login" | "/register" | "/register/method" | "/register/setup" | "/register/success" | "/register/telegram-callback";
+  };
+  "routes/RequireAuth.tsx": {
+    id: "routes/RequireAuth";
+    page: "/";
   };
   "routes/home.tsx": {
     id: "routes/home";
     page: "/";
+  };
+  "routes/login.tsx": {
+    id: "routes/login";
+    page: "/login";
   };
   "routes/register/index.tsx": {
     id: "routes/register/index";
@@ -68,7 +79,9 @@ type RouteFiles = {
 
 type RouteModules = {
   "root": typeof import("./app/root.tsx");
+  "routes/RequireAuth": typeof import("./app/routes/RequireAuth.tsx");
   "routes/home": typeof import("./app/routes/home.tsx");
+  "routes/login": typeof import("./app/routes/login.tsx");
   "routes/register/index": typeof import("./app/routes/register/index.tsx");
   "routes/register/identity": typeof import("./app/routes/register/identity.tsx");
   "routes/register/method": typeof import("./app/routes/register/method.tsx");

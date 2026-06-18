@@ -1,6 +1,7 @@
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from 'react-router'
 import { ChakraProvider } from '@chakra-ui/react'
 import { theme } from './theme'
+import { AuthProvider } from './context/AuthContext'
 
 export default function Root() {
   return (
@@ -11,11 +12,12 @@ export default function Root() {
         <meta name='viewport' content='width=device-width, initial-scale=1.0' />
         <Meta />
         <Links />
-        <script src='https://telegram.org/js/telegram-widget.js?22' defer />
       </head>
       <body>
         <ChakraProvider theme={theme}>
-          <Outlet />
+          <AuthProvider>
+            <Outlet />
+          </AuthProvider>
         </ChakraProvider>
         <ScrollRestoration />
         <Scripts />
