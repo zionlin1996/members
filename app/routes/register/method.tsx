@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router'
 import { Box, Button, Flex, Heading, Text, VStack } from '@chakra-ui/react'
 import { FaTelegram } from 'react-icons/fa'
 import { MdLock, MdVpnKey } from 'react-icons/md'
-import { useRegisterContext, type AuthMethod } from '../../context/RegisterContext'
-import { DOMAIN } from '../../libs/constants'
+import { useRegisterContext, type AuthMethod } from '@/context/RegisterContext'
+import { DOMAIN } from '@/libs/constants'
 
 // Google G must stay as an inline SVG — react-icons renders single-color only,
 // but Google's brand guidelines require the standard multicolor mark.

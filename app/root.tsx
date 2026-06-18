@@ -1,7 +1,7 @@
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from 'react-router'
 import { ChakraProvider } from '@chakra-ui/react'
 import { theme } from './theme'
-import { AuthProvider } from './context/AuthContext'
+import { AuthProvider } from '@/context/AuthContext'
 
 export default function Root() {
   return (

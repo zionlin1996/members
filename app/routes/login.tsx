@@ -17,10 +17,10 @@ import {
 } from '@chakra-ui/react'
 import { FaTelegram } from 'react-icons/fa'
 import { MdVpnKey } from 'react-icons/md'
-import { useAuth } from '../context/AuthContext'
-import { AuthCard } from '../components/AuthCard'
-import { errorMessage, isPasskeyCancelled } from '../libs/errors'
-import { requestTelegramAuth } from '../libs/telegram'
+import { useAuth } from '@/context/AuthContext'
+import { AuthCard } from '@/components/AuthCard'
+import { errorMessage, isPasskeyCancelled } from '@/libs/errors'
+import { requestTelegramAuth } from '@/libs/telegram'
 
 export default function LoginRoute() {
   const { status, login } = useAuth()

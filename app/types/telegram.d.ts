@@ -1,4 +1,4 @@
-import type { TelegramAuthData } from '../libs/api'
+import type { TelegramAuthData } from '@/libs/api'
 
 declare global {
   interface Window {

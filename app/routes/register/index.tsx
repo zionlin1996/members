@@ -1,6 +1,6 @@
 import { Outlet } from 'react-router'
-import { withRegisterContext } from '../../context/RegisterContext'
-import { AuthCard } from '../../components/AuthCard'
+import { withRegisterContext } from '@/context/RegisterContext'
+import { AuthCard } from '@/components/AuthCard'
 
 const RegisterLayout = withRegisterContext(function RegisterLayout() {
   return (

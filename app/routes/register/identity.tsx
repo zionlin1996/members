@@ -13,10 +13,10 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react'
-import { useRegisterContext } from '../../context/RegisterContext'
-import { checkAvailability } from '../../libs/api'
-import { deriveUsername, isValidUsername } from '../../libs/username'
-import { DOMAIN } from '../../libs/constants'
+import { useRegisterContext } from '@/context/RegisterContext'
+import { checkAvailability } from '@/libs/api'
+import { deriveUsername, isValidUsername } from '@/libs/username'
+import { DOMAIN } from '@/libs/constants'
 
 type AvailabilityStatus = 'idle' | 'checking' | 'available' | 'taken' | 'error'
 

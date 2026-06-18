@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router'
 import { Alert, AlertDescription, AlertIcon, Spinner, Text, VStack } from '@chakra-ui/react'
-import { useRegisterContext } from '../../context/RegisterContext'
-import { telegramRegister } from '../../libs/api'
-import { decodeTgAuthResult, requestTelegramAuth } from '../../libs/telegram'
-import { errorMessage } from '../../libs/errors'
+import { useRegisterContext } from '@/context/RegisterContext'
+import { telegramRegister } from '@/libs/api'
+import { decodeTgAuthResult, requestTelegramAuth } from '@/libs/telegram'
+import { errorMessage } from '@/libs/errors'
 
 export default function TelegramCallbackRoute() {
   const { identity } = useRegisterContext()

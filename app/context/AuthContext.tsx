@@ -12,7 +12,7 @@ import {
   telegramLogin,
   type Member,
   type TelegramAuthData,
-} from '../libs/api'
+} from '@/libs/api'
 
 export type AuthStatus = 'loading' | 'authenticated' | 'anonymous'
 

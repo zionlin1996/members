@@ -1,8 +1,8 @@
 import { useNavigate } from 'react-router'
 import { Button, Heading, Text, VStack } from '@chakra-ui/react'
-import { DOMAIN } from '../libs/constants'
-import { useAuth } from '../context/AuthContext'
-import { CenteredScreen } from '../components/AuthCard'
+import { DOMAIN } from '@/libs/constants'
+import { useAuth } from '@/context/AuthContext'
+import { CenteredScreen } from '@/components/AuthCard'
 
 export default function Home() {
   const { member, logout } = useAuth()

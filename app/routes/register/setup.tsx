@@ -17,12 +17,12 @@ import {
 } from '@chakra-ui/react'
 import { MdArrowBack } from 'react-icons/md'
 import { startRegistration } from '@simplewebauthn/browser'
-import { useRegisterContext } from '../../context/RegisterContext'
-import type { Identity } from '../../context/RegisterContext'
-import { passwordRegister, passkeyRegisterStart, passkeyRegisterFinish } from '../../libs/api'
-import { DOMAIN } from '../../libs/constants'
-import { isValidEmail } from '../../libs/email'
-import { errorMessage, isPasskeyCancelled } from '../../libs/errors'
+import { useRegisterContext } from '@/context/RegisterContext'
+import type { Identity } from '@/context/RegisterContext'
+import { passwordRegister, passkeyRegisterStart, passkeyRegisterFinish } from '@/libs/api'
+import { DOMAIN } from '@/libs/constants'
+import { isValidEmail } from '@/libs/email'
+import { errorMessage, isPasskeyCancelled } from '@/libs/errors'
 
 // ── Shared form primitives ─────────────────────────────────────────────────
 

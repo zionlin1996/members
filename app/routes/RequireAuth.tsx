@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { Outlet, useNavigate } from 'react-router'
 import { Box, Spinner } from '@chakra-ui/react'
-import { useAuth } from '../context/AuthContext'
+import { useAuth } from '@/context/AuthContext'
 
 // Layout guard: anonymous visitors are redirected to /login. While the session
 // is being revived from the refresh cookie we hold on a spinner rather than
