@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import {
   Alert,
@@ -14,7 +14,6 @@ import {
   Spinner,
   Text,
   VStack,
-  useToast,
 } from "@chakra-ui/react";
 import { MdArrowBack } from "react-icons/md";
 import { startRegistration } from "@simplewebauthn/browser";
@@ -216,31 +215,16 @@ const PasskeyForm = ({ identity, onSuccess }: FormProps) => {
 const SetupRoute = () => {
   const { identity, method } = useRegisterContext();
   const navigate = useNavigate();
-  const toast = useToast();
-  const redirectTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     if (!identity) navigate("/register", { replace: true });
     else if (!method) navigate("/register/method", { replace: true });
   }, [identity, method, navigate]);
 
-  useEffect(() => {
-    return () => {
-      if (redirectTimer.current) clearTimeout(redirectTimer.current);
-    };
-  }, []);
-
   if (!identity || !method) return null;
 
   function handleSuccess() {
-    toast({
-      title: "Account created!",
-      description: `${identity!.username}@${DOMAIN} is pending admin approval. You'll be notified at your backup email once it's activated.`,
-      status: "success",
-      duration: 5000,
-      isClosable: true,
-    });
-    redirectTimer.current = setTimeout(() => navigate("/"), 5000);
+    navigate("/register/success");
   }
 
   const FormComponent = method === "password" ? PasswordForm : PasskeyForm;

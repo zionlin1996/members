@@ -71,3 +71,29 @@ export function passkeyRegisterFinish(payload: PasskeyFinishPayload) {
     }
   );
 }
+
+// ── Telegram registration ──────────────────────────────────────────────────
+
+export type TelegramAuthData = {
+  id: number;
+  first_name: string;
+  last_name?: string;
+  username?: string;
+  photo_url?: string;
+  auth_date: number;
+  hash: string;
+};
+
+export function telegramRegister(payload: {
+  displayName: string;
+  username: string;
+  telegramData: TelegramAuthData;
+}) {
+  return request<{ id: string; username: string; status: string }>(
+    "/auth/register/telegram",
+    {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }
+  );
+}

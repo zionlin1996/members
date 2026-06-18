@@ -6,5 +6,6 @@ export default [
     route("register", "routes/register/identity.tsx"),
     route("register/method", "routes/register/method.tsx"),
     route("register/setup", "routes/register/setup.tsx"),
+    route("register/success", "routes/register/success.tsx"),
   ]),
 ] satisfies RouteConfig;
