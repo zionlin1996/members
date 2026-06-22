@@ -184,6 +184,38 @@ export function updateProfile(data: Partial<ProfilePatch>) {
   return patch<Profile>('/auth/me/profile', data)
 }
 
+// ── OIDC interaction (Authorization Server login + consent) ──────────────────
+// These power the /interaction/:uid route the AS redirects third-party users to.
+// They are cookie-based (the provider's _interaction cookie) — NOT first-party
+// session calls — so they skip the 401→refresh retry; a 401 means bad
+// credentials and should surface as an error.
+
+export type InteractionDetails = {
+  uid: string
+  prompt: 'login' | 'consent'
+  client: { clientId: string; name?: string; logoUri?: string }
+  requestedScopes: string[]
+  missingScopes: string[]
+  missingClaims: string[]
+}
+
+export type InteractionLoginPayload =
+  | { method: 'password'; username: string; password: string }
+  | { method: 'passkey'; sessionId: string; credential: AuthenticationResponseJSON }
+  | { method: 'telegram'; telegramData: TelegramAuthData }
+
+export function getInteraction(uid: string) {
+  return request<InteractionDetails>(`/interaction/${uid}`, { skipAuthRetry: true })
+}
+
+export function submitInteractionLogin(uid: string, payload: InteractionLoginPayload) {
+  return post<{ redirectTo: string }>(`/interaction/${uid}/login`, payload, { skipAuthRetry: true })
+}
+
+export function submitInteractionConsent(uid: string) {
+  return post<{ redirectTo: string }>(`/interaction/${uid}/consent`, {}, { skipAuthRetry: true })
+}
+
 // ── Registration ───────────────────────────────────────────────────────────
 
 type RegisterResult = { id: string; username: string; status: string }

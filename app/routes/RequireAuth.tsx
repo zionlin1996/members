@@ -11,7 +11,7 @@ function PendingNotice() {
         Your account is awaiting admin approval.
       </Text>
       <Text color='text.muted' fontSize='xs'>
-        You&apos;ll receive a notification at your backup email once it&apos;s active.
+        You'll receive a notification at your backup email once it's active.
       </Text>
     </VStack>
   )

@@ -31,17 +31,17 @@ const BackButton = () => {
   const navigate = useNavigate()
   return (
     <Button
-      variant='ghost'
-      size='sm'
-      alignSelf='flex-start'
-      leftIcon={<MdArrowBack />}
       onClick={() => {
         setMethod(null)
         navigate('/register/method')
       }}
+      variant='ghost'
+      size='sm'
+      alignSelf='flex-start'
+      leftIcon={<MdArrowBack />}
       color='text.muted'
-      _hover={{ bg: 'whiteAlpha.100' }}
       px={2}
+      _hover={{ bg: 'whiteAlpha.100' }}
     >
       Back
     </Button>
