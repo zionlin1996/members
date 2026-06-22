@@ -83,6 +83,10 @@ function post<T>(
   })
 }
 
+function patch<T>(path: string, body: unknown): Promise<T> {
+  return request<T>(path, { method: 'PATCH', body: JSON.stringify(body) })
+}
+
 // ── Session ──────────────────────────────────────────────────────────────────
 
 export type Member = {
@@ -142,6 +146,42 @@ export function checkAvailability(username: string, signal?: AbortSignal) {
     `/auth/availability?username=${encodeURIComponent(username)}`,
     { signal },
   )
+}
+
+// ── Profile ────────────────────────────────────────────────────────────────
+
+export type Profile = {
+  givenName: string | null
+  familyName: string | null
+  middleName: string | null
+  nickname: string | null
+  birthdate: string | null
+  gender: string | null
+  pronouns: string | null
+  locale: string | null
+  zoneinfo: string | null
+  picture: string | null
+  website: string | null
+  profileUrl: string | null
+  phoneNumber: string | null
+  phoneVerified: boolean
+  streetAddress: string | null
+  locality: string | null
+  region: string | null
+  postalCode: string | null
+  country: string | null
+  createdAt: string | null
+  updatedAt: string | null
+}
+
+type ProfilePatch = Omit<Profile, 'phoneVerified' | 'createdAt' | 'updatedAt'>
+
+export function getProfile() {
+  return request<Profile>('/auth/me/profile')
+}
+
+export function updateProfile(data: Partial<ProfilePatch>) {
+  return patch<Profile>('/auth/me/profile', data)
 }
 
 // ── Registration ───────────────────────────────────────────────────────────

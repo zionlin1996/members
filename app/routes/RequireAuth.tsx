@@ -1,14 +1,28 @@
 import { useEffect } from 'react'
 import { Outlet, useNavigate } from 'react-router'
-import { Box, Spinner } from '@chakra-ui/react'
+import { Box, Spinner, Text, VStack } from '@chakra-ui/react'
 import { useAuth } from '@/context/AuthContext'
+import { MemberLayout } from '@/components/MemberLayout'
 
-// Layout guard: anonymous visitors are redirected to /login. While the session
-// is being revived from the refresh cookie we hold on a spinner rather than
-// flashing the login screen. Uses useNavigate + useEffect per project convention
-// (<Navigate> throws in RR v7 without an error boundary).
+function PendingNotice() {
+  return (
+    <VStack spacing={2} py={4} textAlign='center'>
+      <Text color='text.secondary' fontSize='sm'>
+        Your account is awaiting admin approval.
+      </Text>
+      <Text color='text.muted' fontSize='xs'>
+        You&apos;ll receive a notification at your backup email once it&apos;s active.
+      </Text>
+    </VStack>
+  )
+}
+
+// Layout guard — three states:
+//   loading / anonymous → spinner or redirect to /login
+//   authenticated + UNVERIFIED → MemberShell + pending notice
+//   authenticated + ACTIVE → MemberShell + <Outlet/>
 export default function RequireAuth() {
-  const { status } = useAuth()
+  const { status, member } = useAuth()
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -23,5 +37,7 @@ export default function RequireAuth() {
     )
   }
 
-  return <Outlet />
+  return (
+    <MemberLayout>{member?.status === 'UNVERIFIED' ? <PendingNotice /> : <Outlet />}</MemberLayout>
+  )
 }
