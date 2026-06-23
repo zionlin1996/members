@@ -25,6 +25,7 @@ import {
   getInteraction,
   passkeyLoginStart,
   submitInteractionConsent,
+  submitInteractionDeny,
   submitInteractionLogin,
   type InteractionDetails,
 } from '@/libs/api'
@@ -58,7 +59,7 @@ export default function InteractionRoute() {
 
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [submitting, setSubmitting] = useState<LoginMethod | 'consent' | null>(null)
+  const [submitting, setSubmitting] = useState<LoginMethod | 'consent' | 'deny' | null>(null)
   const [error, setError] = useState('')
 
   useEffect(() => {
@@ -125,6 +126,20 @@ export default function InteractionRoute() {
     }
   }
 
+  // Reject the request: the API aborts the OIDC flow and returns a resume URL
+  // that bounces back to the app with an access_denied error.
+  async function denyConsent() {
+    setSubmitting('deny')
+    setError('')
+    try {
+      const { redirectTo } = await submitInteractionDeny(uid)
+      resume(redirectTo)
+    } catch (err) {
+      setError(errorMessage(err))
+      setSubmitting(null)
+    }
+  }
+
   if (loadError) {
     return (
       <AuthCard>
@@ -182,9 +197,28 @@ export default function InteractionRoute() {
           </Alert>
         )}
 
-        <Button variant='brand' w='full' h={10} onClick={approveConsent} isDisabled={!!submitting}>
-          {submitting === 'consent' ? <Spinner size='sm' /> : `Allow ${appName}`}
-        </Button>
+        <VStack spacing={3}>
+          <Button
+            variant='brand'
+            w='full'
+            h={10}
+            onClick={approveConsent}
+            isDisabled={!!submitting}
+          >
+            {submitting === 'consent' ? <Spinner size='sm' /> : `Allow ${appName}`}
+          </Button>
+          <Button
+            variant='ghost'
+            w='full'
+            h={10}
+            color='text.muted'
+            _hover={{ color: 'text.secondary', bg: 'whiteAlpha.100' }}
+            onClick={denyConsent}
+            isDisabled={!!submitting}
+          >
+            {submitting === 'deny' ? <Spinner size='sm' /> : 'Deny'}
+          </Button>
+        </VStack>
       </AuthCard>
     )
   }

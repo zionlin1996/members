@@ -223,6 +223,10 @@ export function submitInteractionConsent(uid: string) {
   return post<{ redirectTo: string }>(`/interaction/${uid}/consent`, {}, { skipAuthRetry: true })
 }
 
+export function submitInteractionDeny(uid: string) {
+  return post<{ redirectTo: string }>(`/interaction/${uid}/deny`, {}, { skipAuthRetry: true })
+}
+
 // ── Connections (authorized third-party apps) ────────────────────────────────
 // First-party, member self-service: the apps the member has granted access via
 // the OIDC Authorization Server, and revocation thereof.
