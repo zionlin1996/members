@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router'
+import { Link, useNavigate, useSearchParams } from 'react-router'
 import {
   Alert,
   AlertDescription,
@@ -19,17 +19,23 @@ import { FaTelegram } from 'react-icons/fa'
 import { MdVpnKey } from 'react-icons/md'
 import { useAuth } from '@/context/AuthContext'
 import { AuthCard } from '@/components/AuthCard'
+import { GoogleIcon } from '@/components/GoogleIcon'
 import { errorMessage, isPasskeyCancelled } from '@/libs/errors'
+import { googleLoginUrl } from '@/libs/api'
 import { requestTelegramAuth } from '@/libs/telegram'
 
 export default function LoginRoute() {
   const { status, login } = useAuth()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
 
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [submitting, setSubmitting] = useState<'password' | 'passkey' | 'telegram' | null>(null)
-  const [error, setError] = useState('')
+  const [submitting, setSubmitting] = useState<
+    'password' | 'passkey' | 'telegram' | 'google' | null
+  >(null)
+  // Seed from ?error=… bounced back by the Google OAuth callback (read once).
+  const [error, setError] = useState(() => searchParams.get('error') ?? '')
 
   // Already signed in → go to the app. Also handles post-login redirect:
   // login methods set status to 'authenticated', which triggers this effect.
@@ -128,6 +134,20 @@ export default function LoginRoute() {
           onClick={() => run('passkey', () => login('passkey')(username || undefined))}
         >
           {submitting === 'passkey' ? <Spinner size='sm' /> : 'Sign in with a passkey'}
+        </Button>
+
+        <Button
+          variant='google'
+          w='full'
+          h={10}
+          leftIcon={<GoogleIcon />}
+          isDisabled={!!submitting}
+          onClick={() => {
+            setSubmitting('google')
+            window.location.href = googleLoginUrl()
+          }}
+        >
+          {submitting === 'google' ? <Spinner size='sm' /> : 'Sign in with Google'}
         </Button>
 
         <Button

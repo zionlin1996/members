@@ -136,6 +136,13 @@ export function telegramLogin(payload: { telegramData: TelegramAuthData }) {
   return post<{ accessToken: string }>('/auth/login/telegram', payload, { skipAuthRetry: true })
 }
 
+// Google OAuth is a full-page redirect flow (not XHR): navigate the browser to
+// these. The API callback sets the refresh cookie and 302s back to the app,
+// where AuthContext revives the session via /auth/refresh on load.
+export const googleLoginUrl = () => `${BASE}/auth/login/google`
+export const googleRegisterUrl = (displayName: string, username: string) =>
+  `${BASE}/auth/register/google?displayName=${encodeURIComponent(displayName)}&username=${encodeURIComponent(username)}`
+
 export async function logout() {
   await post<void>('/auth/logout', undefined, { skipAuthRetry: true })
   accessToken = null
