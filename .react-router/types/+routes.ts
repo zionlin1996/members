@@ -14,6 +14,9 @@ type Pages = {
   "/": {
     params: {};
   };
+  "/connections": {
+    params: {};
+  };
   "/admin": {
     params: {};
   };
@@ -48,15 +51,19 @@ type Pages = {
 type RouteFiles = {
   "root.tsx": {
     id: "root";
-    page: "/" | "/admin" | "/admin/clients" | "/login" | "/interaction/:uid" | "/register" | "/register/method" | "/register/setup" | "/register/success" | "/register/telegram-callback";
+    page: "/" | "/connections" | "/admin" | "/admin/clients" | "/login" | "/interaction/:uid" | "/register" | "/register/method" | "/register/setup" | "/register/success" | "/register/telegram-callback";
   };
   "routes/RequireAuth.tsx": {
     id: "routes/RequireAuth";
-    page: "/";
+    page: "/" | "/connections";
   };
   "routes/home.tsx": {
     id: "routes/home";
     page: "/";
+  };
+  "routes/connections.tsx": {
+    id: "routes/connections";
+    page: "/connections";
   };
   "routes/admin/layout.tsx": {
     id: "routes/admin/layout";
@@ -108,6 +115,7 @@ type RouteModules = {
   "root": typeof import("./app/root.tsx");
   "routes/RequireAuth": typeof import("./app/routes/RequireAuth.tsx");
   "routes/home": typeof import("./app/routes/home.tsx");
+  "routes/connections": typeof import("./app/routes/connections.tsx");
   "routes/admin/layout": typeof import("./app/routes/admin/layout.tsx");
   "routes/admin/members": typeof import("./app/routes/admin/members.tsx");
   "routes/admin/clients": typeof import("./app/routes/admin/clients.tsx");

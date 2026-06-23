@@ -223,6 +223,26 @@ export function submitInteractionConsent(uid: string) {
   return post<{ redirectTo: string }>(`/interaction/${uid}/consent`, {}, { skipAuthRetry: true })
 }
 
+// ── Connections (authorized third-party apps) ────────────────────────────────
+// First-party, member self-service: the apps the member has granted access via
+// the OIDC Authorization Server, and revocation thereof.
+
+export type Connection = {
+  clientId: string
+  name: string
+  logoUri: string | null
+  scopes: string[]
+  authorizedAt: number | null
+}
+
+export function getConnections() {
+  return request<{ connections: Connection[] }>('/auth/me/connections')
+}
+
+export function revokeConnection(clientId: string) {
+  return request<void>(`/auth/me/connections/${clientId}`, { method: 'DELETE' })
+}
+
 // ── Members ────────────────────────────────────────────────────────────────
 
 export function getMembers() {

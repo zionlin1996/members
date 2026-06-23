@@ -1,7 +1,34 @@
-import { useNavigate } from 'react-router'
+import { NavLink, useNavigate } from 'react-router'
 import { Box, Button, Divider, Flex, HStack, Text, VStack } from '@chakra-ui/react'
 import { useAuth } from '@/context/AuthContext'
 import { DOMAIN } from '@/libs/constants'
+
+const NAV_ITEMS = [
+  { to: '/', label: 'Profile', end: true },
+  { to: '/connections', label: 'Connected apps', end: false },
+]
+
+const MemberNav = () => (
+  <HStack spacing={5} px={6} pt={4}>
+    {NAV_ITEMS.map(({ to, label, end }) => (
+      <Box
+        key={to}
+        as={NavLink}
+        to={to}
+        end={end}
+        fontSize='sm'
+        color='text.muted'
+        pb={1}
+        borderBottom='2px solid'
+        borderColor='transparent'
+        _hover={{ color: 'text.secondary' }}
+        sx={{ '&.active': { color: 'text.primary', borderColor: 'brand.500' } }}
+      >
+        {label}
+      </Box>
+    ))}
+  </HStack>
+)
 
 function getInitials(name: string) {
   const words = name.trim().split(/\s+/)
@@ -95,6 +122,9 @@ export function MemberLayout({ children }: React.PropsWithChildren) {
         </Flex>
 
         <Divider borderColor='whiteAlpha.100' />
+
+        {/* ── Sub-nav (active members only; the pending notice has no tabs) ── */}
+        {status === 'ACTIVE' && <MemberNav />}
 
         {/* ── Content slot ── */}
         <Box px={6} py={6}>
