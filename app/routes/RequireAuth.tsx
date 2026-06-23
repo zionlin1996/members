@@ -4,18 +4,16 @@ import { Box, Spinner, Text, VStack } from '@chakra-ui/react'
 import { useAuth } from '@/context/AuthContext'
 import { MemberLayout } from '@/components/MemberLayout'
 
-function PendingNotice() {
-  return (
-    <VStack spacing={2} py={4} textAlign='center'>
-      <Text color='text.secondary' fontSize='sm'>
-        Your account is awaiting admin approval.
-      </Text>
-      <Text color='text.muted' fontSize='xs'>
-        You'll receive a notification at your backup email once it's active.
-      </Text>
-    </VStack>
-  )
-}
+const PendingNotice = () => (
+  <VStack spacing={2} py={4} textAlign='center'>
+    <Text color='text.secondary' fontSize='sm'>
+      Your account is awaiting admin approval.
+    </Text>
+    <Text color='text.muted' fontSize='xs'>
+      You'll receive a notification at your backup email once it's active.
+    </Text>
+  </VStack>
+)
 
 // Layout guard — three states:
 //   loading / anonymous → spinner or redirect to /login

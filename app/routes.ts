@@ -2,6 +2,10 @@ import { type RouteConfig, index, route, layout } from '@react-router/dev/routes
 
 export default [
   layout('routes/RequireAuth.tsx', [index('routes/home.tsx')]),
+  layout('routes/admin/layout.tsx', [
+    route('admin', 'routes/admin/members.tsx'),
+    route('admin/clients', 'routes/admin/clients.tsx'),
+  ]),
   route('login', 'routes/login.tsx'),
   route('interaction/:uid', 'routes/interaction.tsx'),
   layout('routes/register/index.tsx', [

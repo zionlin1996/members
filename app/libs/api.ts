@@ -216,6 +216,96 @@ export function submitInteractionConsent(uid: string) {
   return post<{ redirectTo: string }>(`/interaction/${uid}/consent`, {}, { skipAuthRetry: true })
 }
 
+// ── Members ────────────────────────────────────────────────────────────────
+
+export function getMembers() {
+  return request<{ members: Member[] }>('/members')
+}
+
+// ── Admin ───────────────────────────────────────────────────────────────────
+// Mirror of the access-token bridge: key lives in memory, set by the admin
+// layout on unlock and cleared on lock. No context timing issues.
+
+let adminApiKey: string | null = null
+
+export function setAdminKey(key: string | null) {
+  adminApiKey = key
+}
+
+function adminFetch<T>(path: string, init: RequestInit = {}): Promise<T> {
+  return request<T>(path, {
+    ...init,
+    skipAuthRetry: true,
+    headers: {
+      ...(adminApiKey ? { Authorization: `ApiKey ${adminApiKey}` } : {}),
+      ...init.headers,
+    },
+  })
+}
+
+export type OAuthClient = {
+  id: string
+  clientId: string
+  name: string
+  redirectUris: string[]
+  allowedScopes: string[]
+  isConfidential: boolean
+  logoUri: string | null
+  createdAt: string
+  updatedAt: string
+}
+
+export type OAuthClientPayload = {
+  name: string
+  redirectUris: string[]
+  allowedScopes: string[]
+  clientId?: string
+  logoUri?: string
+}
+
+export const SUPPORTED_SCOPES = [
+  'openid',
+  'profile',
+  'email',
+  'address',
+  'phone',
+  'membership',
+  'offline_access',
+] as const
+
+export function adminApproveMember(id: string) {
+  return adminFetch<{ member: Pick<Member, 'id' | 'username' | 'status'> }>(
+    `/admin/members/${id}/approve`,
+    { method: 'POST' },
+  )
+}
+
+export function adminListClients() {
+  return adminFetch<{ clients: OAuthClient[] }>('/admin/oauth-clients')
+}
+
+export function adminGetClient(id: string) {
+  return adminFetch<{ client: OAuthClient }>(`/admin/oauth-clients/${id}`)
+}
+
+export function adminCreateClient(payload: OAuthClientPayload) {
+  return adminFetch<{ client: OAuthClient }>('/admin/oauth-clients', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  })
+}
+
+export function adminUpdateClient(id: string, payload: Partial<OAuthClientPayload>) {
+  return adminFetch<{ client: OAuthClient }>(`/admin/oauth-clients/${id}`, {
+    method: 'PATCH',
+    body: JSON.stringify(payload),
+  })
+}
+
+export function adminDeleteClient(id: string) {
+  return adminFetch<void>(`/admin/oauth-clients/${id}`, { method: 'DELETE' })
+}
+
 // ── Registration ───────────────────────────────────────────────────────────
 
 type RegisterResult = { id: string; username: string; status: string }
