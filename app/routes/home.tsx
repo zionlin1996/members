@@ -208,12 +208,12 @@ export default function Home() {
         )}
         <Button
           variant='brand'
-          w='full'
-          h={10}
           isDisabled={!hasChanges || hasErrors}
+          isLoading={saving}
+          loadingText='Saving...'
           onClick={handleSave}
         >
-          {saving ? <Spinner size='sm' /> : 'Save profile'}
+          Save profile
         </Button>
       </Box>
     </VStack>

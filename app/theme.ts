@@ -95,6 +95,8 @@ export const theme = extendTheme({
 
         // Native auth methods (password, passkey) — same structure as google
         native: {
+          width: 'full',
+          height: 10,
           bg: 'bg.input',
           color: 'text.primary',
           border: '1px solid',
@@ -107,6 +109,8 @@ export const theme = extendTheme({
         },
 
         google: {
+          width: 'full',
+          height: 10,
           bg: 'google.bg',
           color: 'google.text',
           border: '1px solid',
@@ -119,6 +123,8 @@ export const theme = extendTheme({
         },
 
         telegram: {
+          width: 'full',
+          height: 10,
           bg: 'telegram.bg',
           color: 'white',
           border: '1px solid',

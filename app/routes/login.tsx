@@ -127,8 +127,6 @@ export default function LoginRoute() {
       <VStack spacing={3}>
         <Button
           variant='native'
-          w='full'
-          h={10}
           leftIcon={<MdVpnKey size={18} />}
           isDisabled={!!submitting}
           onClick={() => run('passkey', () => login('passkey')(username || undefined))}
@@ -138,8 +136,6 @@ export default function LoginRoute() {
 
         <Button
           variant='google'
-          w='full'
-          h={10}
           leftIcon={<GoogleIcon />}
           isDisabled={!!submitting}
           onClick={() => {
@@ -152,8 +148,6 @@ export default function LoginRoute() {
 
         <Button
           variant='telegram'
-          w='full'
-          h={10}
           leftIcon={<FaTelegram size={20} />}
           isDisabled={!!submitting}
           onClick={handleTelegram}

@@ -273,8 +273,16 @@ export default function InteractionRoute() {
           </Alert>
         )}
 
-        <Button type='submit' variant='brand' w='full' h={10} isDisabled={!canSubmitPassword}>
-          {submitting === 'password' ? <Spinner size='sm' /> : 'Sign in'}
+        <Button
+          type='submit'
+          variant='brand'
+          w='full'
+          h={10}
+          isDisabled={!canSubmitPassword}
+          isLoading={submitting === 'password'}
+          loadingText='Signing in...'
+        >
+          Sign in
         </Button>
       </VStack>
 
@@ -289,24 +297,24 @@ export default function InteractionRoute() {
       <VStack spacing={3}>
         <Button
           variant='native'
-          w='full'
-          h={10}
           leftIcon={<MdVpnKey size={18} />}
           isDisabled={!!submitting}
           onClick={submitPasskey}
+          isLoading={submitting === 'passkey'}
+          loadingText='Signing in with a passkey...'
         >
-          {submitting === 'passkey' ? <Spinner size='sm' /> : 'Sign in with a passkey'}
+          Sign in with a passkey
         </Button>
 
         <Button
           variant='telegram'
-          w='full'
-          h={10}
           leftIcon={<FaTelegram size={20} />}
           isDisabled={!!submitting}
           onClick={submitTelegram}
+          isLoading={submitting === 'telegram'}
+          loadingText='Signing in with Telegram...'
         >
-          {submitting === 'telegram' ? <Spinner size='sm' /> : 'Sign in with Telegram'}
+          Sign in with Telegram
         </Button>
       </VStack>
     </AuthCard>

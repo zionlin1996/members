@@ -76,19 +76,11 @@ export default function MethodRoute() {
       </VStack>
 
       <VStack spacing={3}>
-        <Button
-          variant='native'
-          w='full'
-          h={10}
-          leftIcon={<MdLock size={18} />}
-          onClick={registerWith('password')}
-        >
+        <Button variant='native' leftIcon={<MdLock size={18} />} onClick={registerWith('password')}>
           Password
         </Button>
         <Button
           variant='native'
-          w='full'
-          h={10}
           leftIcon={<MdVpnKey size={18} />}
           onClick={registerWith('passkey')}
         >
@@ -96,8 +88,6 @@ export default function MethodRoute() {
         </Button>
         <Button
           variant='google'
-          w='full'
-          h={10}
           leftIcon={<GoogleIcon />}
           onClick={() => {
             window.location.href = googleRegisterUrl(identity.displayName, identity.username)
@@ -107,8 +97,6 @@ export default function MethodRoute() {
         </Button>
         <Button
           variant='telegram'
-          w='full'
-          h={10}
           leftIcon={<FaTelegram size={20} />}
           onClick={() => navigate('/register/telegram-callback')}
         >
